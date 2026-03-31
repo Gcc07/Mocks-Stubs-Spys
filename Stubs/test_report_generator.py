@@ -1,8 +1,8 @@
 # ── test_report_generator.py ────────────────────────────────
 import unittest
-from report_generator import *
-from interfaces import *
 from unittest.mock import MagicMock
+from report_generator import ReportGenerator
+from interfaces import SaleRecord
 
 class TestReportGenerator(unittest.TestCase):
 
@@ -48,3 +48,15 @@ class TestReportGenerator(unittest.TestCase):
 
         self.assertEqual(result["total_revenue"], total_revenue)
         self.assertEqual(result["top_product"],    "SKU-D")
+
+    def test_tied_revenue(self):
+        repo_stub = MagicMock()
+        top_revenue = 2000
+        repo_stub.get_sales.return_value = [
+            SaleRecord("SKU-E", 10, top_revenue),
+            SaleRecord("SKU-F", 10, top_revenue),
+        ]
+        gen    = ReportGenerator(repo_stub)
+        result = gen.monthly_summary(3, 2023)
+
+        self.assertIn(result["top_product"], ("SKU-E", "SKU-F"))

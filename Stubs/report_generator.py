@@ -1,4 +1,5 @@
 # ── report_generator.py ─────────────────────────────────────
+from interfaces import *
 class ReportGenerator:
     def __init__(self, repo: SalesRepository):
         self._repo = repo
